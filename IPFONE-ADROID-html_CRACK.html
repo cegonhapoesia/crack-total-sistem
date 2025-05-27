@@ -1,0 +1,26 @@
+#CRACKEAR ANDROID e ipfone
+
+<!DOCTYPE html>
+<html>
+<body>
+  <h1>Selecionar arquivos para ver detalhes</h1>
+  <input type="file" id="files" multiple webkitdirectory />
+  <ul id="fileList"></ul>
+
+  <script>
+    const input = document.getElementById('files');
+    const list = document.getElementById('fileList');
+
+    input.addEventListener('change', () => {
+      list.innerHTML = '';
+      for (const file of input.files) {
+        const li = document.createElement('li');
+        li.textContent = `${file.webkitRelativePath} - ${file.size} bytes - ${new Date(file.lastModified).toLocaleString()}`;
+        list.appendChild(li);
+      }
+    });
+  </script>
+</body>
+</html>
+
+
