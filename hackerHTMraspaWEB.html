@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <title>Relatório do Sistema</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background:#f9f9f9; color:#333; }
+        h1, h2 { color: #2c3e50; }
+        table { background:#fff; margin-bottom:20px; font-size:14px; }
+        th, td { padding:8px; border:1px solid #ccc; vertical-align: top; }
+        th { background-color:#3498db; color:#fff; }
+        tr:nth-child(even) { background-color:#f2f2f2; }
+        a { text-decoration: none; color: #2980b9; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Relatório do Sistema</h1>
+    <p id="data-geracao"></p>
+
+    <h2>Informações do Sistema</h2>
+    <table id="tabela-sistema">
+        <tr><th>Sistema Operacional</th><td id="sistema-operacional"></td></tr>
+        <tr><th>Usuário</th><td id="usuario"></td></tr>
+        <tr><th>Computador</th><td id="computador"></td></tr>
+        <tr><th>Processador</th><td id="processador"></td></tr>
+    </table>
+
+    <h2>Documentos</h2>
+    <input type="file" id="arquivos" webkitdirectory multiple style="display: none;">
+    <button id="ler-pasta">Ler Pasta Documentos</button>
+    <table id="tabela-documentos">
+        <tr><th>Nome</th><th>Tipo</th><th>Tamanho</th><th>Última Modificação</th><th>Link</th></tr>
+    </table>
+
+    <script>
+        // Função para gerar o relatório
+        function gerarRelatorio() {
+            // Informações do sistema
+            const sistemaOperacional = navigator.platform;
+            const usuario = "Usuário desconhecido"; 
+            const computador = "Computador desconhecido"; 
+            const processador = "Processador desconhecido"; 
+
+            // Preenche a tabela de informações do sistema
+            document.getElementById("sistema-operacional").innerHTML = sistemaOperacional;
+            document.getElementById("usuario").innerHTML = usuario;
+            document.getElementById("computador").innerHTML = computador;
+            document.getElementById("processador").innerHTML = processador;
+
+            // Data de geração do relatório
+            const dataGeracao = new Date();
+            document.getElementById("data-geracao").innerHTML = "Gerado em " + dataGeracao.toLocaleString();
+        }
+
+        // Chama a função para gerar o relatório
+        gerarRelatorio();
+
+        document.getElementById("ler-pasta").addEventListener("click", () => {
+          document.getElementById("arquivos").click();
+        });
+
+        document.getElementById("arquivos").addEventListener("change", (e) => {
+          const arquivos = e.target.files;
+          const tabelaDocumentos = document.getElementById("tabela-documentos");
+          while (tabelaDocumentos.rows.length > 1) {
+            tabelaDocumentos.deleteRow(1);
+          }
+          for (const arquivo of arquivos) {
+            const linha = tabelaDocumentos.insertRow();
+            const celulaNome = linha.insertCell();
+            const celulaTipo = linha.insertCell();
+            const celulaTamanho = linha.insertCell();
+            const celulaUltimaModificacao = linha.insertCell();
+            const celulaLink = linha.insertCell();
+
+            celulaNome.innerHTML = arquivo.webkitRelativePath;
+            celulaTipo.innerHTML = "Arquivo";
+            celulaTamanho.innerHTML = arquivo.size;
+            celulaUltimaModificacao.innerHTML = new Date(arquivo.lastModified).toLocaleString();
+
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(arquivo);
+            link.download = arquivo.name;
+            link.textContent = "Descarregar";
+            celulaLink.appendChild(link);
+          }
+        });
+    </script>
+</body>
+</html>
