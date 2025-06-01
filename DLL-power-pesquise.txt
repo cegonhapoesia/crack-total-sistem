@@ -1,0 +1,84 @@
+Add-Type -TypeDefinition @"
+using System;
+
+public class SearchHelper
+{
+    public static string BuildAdvancedSearchUrl(string query, string country = null, string port = null)
+    {
+        string url = $"https://www.bing.com/search?q={Uri.EscapeDataString(query)}";
+        
+        if (!string.IsNullOrEmpty(country))
+        {
+            url += $"&cc={country}";
+        }
+
+        if (!string.IsNullOrEmpty(port))
+        {
+            url += $"&port={port}";
+        }
+
+        return url;
+    }
+
+    public static string BuildSimpleSearchUrl(string query)
+    {
+        return $"https://www.bing.com/search?q={Uri.EscapeDataString(query)}";
+    }
+}
+"@ -Language CSharp
+
+# Função para abrir a URL no navegador
+function Open-SearchInBrowser {
+    param (
+        [string]$searchQuery,
+        [string]$country = '',
+        [string]$port = ''
+    )
+
+    if ([string]::IsNullOrWhiteSpace($searchQuery)) {
+        Write-Warning "Consulta vazia! Informe um termo para pesquisar."
+        return
+    }
+
+    # Gera a URL da pesquisa avançada com os parâmetros da DLL
+    $url = [SearchHelper]::BuildAdvancedSearchUrl($searchQuery, $country, $port)
+
+    if (-not $url) {
+        Write-Warning "Erro ao gerar URL da pesquisa."
+        return
+    }
+
+    # Abre o navegador padrão na URL
+    Start-Process $url
+    Write-Host "Abrindo navegador com a pesquisa: $searchQuery"
+}
+
+# Menu interativo
+function Show-Menu {
+    Write-Host "`n--- Menu de Pesquisa Profunda ---"
+    Write-Host "1. Nova Pesquisa"
+    Write-Host "2. Sair"
+    Write-Host "`nEscolha uma opção (1 ou 2): "
+}
+
+# Loop principal
+while ($true) {
+    Show-Menu
+    $option = Read-Host
+
+    if ($option -eq '1') {
+        $query = Read-Host "Digite o termo para pesquisa"
+        $country = Read-Host "Digite o código do país (ex: BR para Brasil, US para EUA)"
+        $port = Read-Host "Digite o número da porta (opcional)"
+        
+        # Chama a função de pesquisa
+        Open-SearchInBrowser -searchQuery $query -country $country -port $port
+    }
+    elseif ($option -eq '2') {
+        Write-Host "Saindo... Até logo!"
+        break
+    }
+    else {
+        Write-Host "Opção inválida! Por favor, escolha 1 ou 2."
+    }
+}
