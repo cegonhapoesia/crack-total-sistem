@@ -1,0 +1,60 @@
+#COMANDO PARA SABER IP WEB DE SITES
+nslookup santander.pt
+
+#######################################
+#MESMO comando inserido em variável SCRIPT
+#ESTE SCRIPT ENTRA DIRETO E INVADE O SERVER PADRAO DO SITE
+$site = Read-Host "https://www.netflix.com/pt/"
+nslookup $site
+#################################################################
+#Comandos AVANÇADOS POWER SHEL SERVER
+
+Aqui estão alguns comandos úteis do PowerShell, comentados para você entender suas funcionalidades:
+Informações do Sistema
+Get-ComputerInfo: Obtém informações sobre o computador, incluindo o nome, sistema operacional, processador, memória RAM, etc.
+Get-Date: Obtém a data e hora atual do sistema.
+Get-Process: Obtém uma lista de processos em execução no sistema.
+Get-Service: Obtém uma lista de serviços instalados no sistema.
+Usuários e Grupos
+Get-LocalUser: Obtém uma lista de usuários locais do sistema.
+Get-LocalGroup: Obtém uma lista de grupos locais do sistema.
+New-LocalUser: Cria um novo usuário local.
+Remove-LocalUser: Remove um usuário local.
+Add-LocalGroupMember: Adiciona um usuário a um grupo local.
+Remove-LocalGroupMember: Remove um usuário de um grupo local.
+Arquivo e Pasta
+Get-ChildItem: Obtém uma lista de arquivos e pastas em um diretório.
+New-Item: Cria um novo arquivo ou pasta.
+Remove-Item: Remove um arquivo ou pasta.
+Copy-Item: Copia um arquivo ou pasta.
+Move-Item: Move um arquivo ou pasta.
+Rename-Item: Renomeia um arquivo ou pasta.
+Rede
+Get-NetIPConfiguration: Obtém informações sobre a configuração de IP do sistema.
+Get-NetAdapter: Obtém uma lista de adaptadores de rede instalados no sistema.
+Test-NetConnection: Testa a conectividade de rede com um endereço IP ou nome de host.
+Segurança
+Get-Acl: Obtém as permissões de acesso de um arquivo ou pasta.
+Set-Acl: Define as permissões de acesso de um arquivo ou pasta.
+Get-AuthenticodeSignature: Obtém a assinatura de autenticação de um arquivo.
+Outros
+Get-EventLog: Obtém logs de eventos do sistema.
+Get-WmiObject: Obtém informações sobre o sistema usando WMI (Windows Management Instrumentation).
+Invoke-Command: Executa um comando em um computador remoto.
+Active Directory
+Get-ADUser: Obtém informações sobre um usuário do Active Directory.
+Get-ADGroup: Obtém informações sobre um grupo do Active Directory.
+New-ADUser: Cria um novo usuário do Active Directory.
+Remove-ADUser: Remove um usuário do Active Directory.
+Add-ADGroupMember: Adiciona um usuário a um grupo do Active Directory.
+Remove-ADGroupMember: Remove um usuário de um grupo do Active Directory.
+Exchange
+Get-Mailbox: Obtém informações sobre uma caixa de correio do Exchange.
+Get-MailboxPermission: Obtém permissões de acesso de uma caixa de correio do Exchange.
+New-Mailbox: Cria uma nova caixa de correio do Exchange.
+Remove-Mailbox: Remove uma caixa de correio do Exchange.
+Lembre-se de que alguns desses comandos requerem permissões administrativas ou acesso ao Active Directory ou Exchange para funcionar corretamente.
+Aqui estão alguns exemplos de como usar esses comandos:
+Get-ChildItem -Path C:\Users: Obtém uma lista de arquivos e pastas no diretório C:\Users.
+New-LocalUser -Name "NovoUsuário" -Password (ConvertTo-SecureString -String "Senha123" -AsPlainText -Force): Cria um novo usuário local com nome "NovoUsuário" e senha "Senha123".
+Get-ADUser -Identity "NomeDoUsuário": Obtém informações sobre o usuário "NomeDoUsuário" do Active Directory.
