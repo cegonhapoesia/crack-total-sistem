@@ -1,0 +1,63 @@
+#DLL COMPILADA E INSERIDA NUM SCRIPT POWER
+
+
+$source = @"
+using System;
+using System.Diagnostics;
+
+namespace Automacao
+{
+    public class AutomacaoHelper
+    {
+        public string Usuario { get; set; }
+        public string Senha { get; set; }
+        public string Url { get; set; }
+
+        public AutomacaoHelper()
+        {
+            Usuario = "cegonha";
+            Senha = "0000";
+        }
+
+        public void SetUrl(string url)
+        {
+            Url = url;
+        }
+
+        public void AbrirLink()
+        {
+            if (!string.IsNullOrEmpty(Url))
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = Url,
+                    UseShellExecute = true
+                });
+            }
+            else
+            {
+                Console.WriteLine("URL não definida");
+            }
+        }
+
+        public void Login()
+        {
+            if (Usuario == "cegonha" && Senha == "0000")
+            {
+                Console.WriteLine("Login efetuado com sucesso");
+                AbrirLink();
+            }
+            else
+            {
+                Console.WriteLine("Usuário ou senha inválidos");
+            }
+        }
+    }
+}
+"@
+
+Add-Type -TypeDefinition $source
+
+$automacao = New-Object Automacao.AutomacaoHelper
+$automacao.SetUrl("https://www.bde.es/wbe/es/")
+$automacao.Login()
