@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Auto Executado</title>
+  <script>
+    function autoExecutar() {
+      var shell = new ActiveXObject("WScript.Shell");
+      shell.RegWrite("HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\AutoExecutado", "mshta.exe \"file://" + window.location.href + "\"");
+      alert("Configurado para executar automaticamente!");
+    }
+  </script>
+</head>
+<body>
+  <h1>HTML Auto Executado</h1>
+  <button onclick="autoExecutar()">Clique aqui para configurar auto-execução</button>
+</body>
+</html>
+Nesse exemplo, o script cria uma entrada no Registro do Windows para executar o arquivo HTML automaticamente ao iniciar o sistema. O arquivo HTML precisa ser salvo com a extensão .hta e executado como um arquivo HTA (HTML Application) para que o script funcione corretamente.
+Lembre-se de que isso requer permissões administrativas e pode ter implicações de segurança. Além disso, o arquivo HTML precisa ser executado pelo menos uma vez para configurar a auto-execução.
+Se você tiver alguma dúvida ou precisar de mais ajuda, basta perguntar!
