@@ -1,0 +1,35 @@
+<html>
+<head>
+<title>Pesquisar Arquivo na Web</title>
+<hta:application 
+    applicationname="PesquisaArquivoWeb"
+    border="thin"
+    scroll="no"
+    singleinstance="yes"
+    sysmenu="yes"
+/>
+<script language="VBScript">
+    Sub Pesquisar()
+        Dim termo, url
+        termo = document.getElementById("entrada").value
+        If termo = "" Then
+            MsgBox "Digite algo para pesquisar."
+            Exit Sub
+        End If
+
+        ' Exemplo com Google e operador "file"
+        url = "https://www.google.com/search?q=file+" & Replace(termo, " ", "+")
+
+        ' Abrir no navegador padrão
+        Set shell = CreateObject("WScript.Shell")
+        shell.Run url
+    End Sub
+</script>
+</head>
+<body>
+    <h3>Pesquisa Rápida de Arquivos na Web</h3>
+    <input type="text" id="entrada" size="50" placeholder="Digite o nome do arquivo">
+    <button onclick="Pesquisar">Pesquisar</button>
+    <p>Exemplo: <i>mp3 gratis</i>, <i>pdf apostila matemática</i></p>
+</body>
+</html>
