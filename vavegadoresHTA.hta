@@ -1,0 +1,59 @@
+<html>
+<head>
+    <title>Pesquisa na Web</title>
+    <hta:application 
+        id="oHTA"
+        applicationname="PesquisaWeb"
+        border="thin"
+        caption="yes"
+        contextmenu="no"
+        scroll="no"
+        singleinstance="yes"
+        windowstate="normal" />
+    <script language="javascript">
+        function trim(str) {
+            return str.replace(/^\s+|\s+$/g, "");
+        }
+
+        function pesquisar() {
+            var termo = trim(document.getElementById("termo").value);
+            var motor = document.getElementById("motor").value;
+
+            if (termo === "") {
+                alert("Digite um termo para pesquisar.");
+                return;
+            }
+
+            var url = "";
+
+            switch(motor) {
+                case "google":
+                    url = "https://www.google.com/search?q=" + encodeURIComponent(termo);
+                    break;
+                case "bing":
+                    url = "https://www.bing.com/search?q=" + encodeURIComponent(termo);
+                    break;
+                case "duckduckgo":
+                    url = "https://duckduckgo.com/?q=" + encodeURIComponent(termo);
+                    break;
+            }
+
+            var novaJanela = window.open(url, "_blank");
+        }
+    </script>
+</head>
+<body style="font-family: Arial; padding: 20px;">
+    <h2>Pesquisa na Web</h2>
+    <label>Escolha o motor de busca:</label><br>
+    <select id="motor">
+        <option value="google">Google</option>
+        <option value="bing">Bing</option>
+        <option value="duckduckgo">DuckDuckGo</option>
+    </select><br><br>
+
+    <label>Digite sua pesquisa:</label><br>
+    <input type="text" id="termo" style="width: 300px;" /><br><br>
+
+    <button onclick="pesquisar()">Pesquisar</button>
+</body>
+</html>
