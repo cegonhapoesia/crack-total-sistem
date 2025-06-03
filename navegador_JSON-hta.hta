@@ -1,0 +1,124 @@
+<html>
+<head>
+    <title>Pesquisa na Web e JSON</title>
+    <hta:application 
+        id="oHTA"
+        applicationname="PesquisaWeb"
+        border="thin"
+        caption="yes"
+        contextmenu="no"
+        scroll="no"
+        singleinstance="yes"
+        windowstate="normal" />
+    <script language="javascript">
+        function trim(str) {
+            return str.replace(/^\s+|\s+$/g, "");
+        }
+
+        function pesquisar() {
+            var termo = trim(document.getElementById("termo").value);
+            var motor = document.getElementById("motor").value;
+
+            if (termo === "") {
+                alert("Digite um termo para pesquisar.");
+                return;
+            }
+
+            if (motor === "json") {
+                pesquisarJSONRemoto(termo);
+                return;
+            }
+
+            var url = "";
+
+            switch(motor) {
+                case "google":
+                    url = "https://www.google.com/search?q=" + encodeURIComponent(termo);
+                    break;
+                case "bing":
+                    url = "https://www.bing.com/search?q=" + encodeURIComponent(termo);
+                    break;
+                case "duckduckgo":
+                    url = "https://duckduckgo.com/?q=" + encodeURIComponent(termo);
+                    break;
+            }
+
+            window.open(url, "_blank");
+        }
+
+        function pesquisarJSONRemoto(termo) {
+    var urlJSON = trim(document.getElementById("jsonUrl").value);
+    var resultadoDiv = document.getElementById("resultado");
+    resultadoDiv.innerHTML = "";
+
+    if (urlJSON === "") {
+        alert("Digite o link do arquivo JSON.");
+        return;
+    }
+
+    try {
+        var xhr = new ActiveXObject("MSXML2.XMLHTTP");
+        xhr.open("GET", urlJSON, false);
+        xhr.send();
+
+        if (xhr.status === 200) {
+            var dados = JSON.parse(xhr.responseText);
+
+            if (!Array.isArray(dados)) {
+                alert("O JSON carregado não é uma lista (array).");
+                return;
+            }
+
+            var resultados = [];
+
+            for (var i = 0; i < dados.length; i++) {
+                var item = dados[i];
+                if ((item.titulo && item.titulo.toLowerCase().indexOf(termo.toLowerCase()) !== -1) ||
+                    (item.conteudo && item.conteudo.toLowerCase().indexOf(termo.toLowerCase()) !== -1)) {
+                    resultados.push(item);
+                }
+            }
+
+            if (resultados.length === 0) {
+                resultadoDiv.innerHTML = "<p>Nenhum resultado encontrado.</p>";
+            } else {
+                var html = "<ul>";
+                for (var j = 0; j < resultados.length; j++) {
+                    html += "<li><strong>" + resultados[j].titulo + "</strong><br>" +
+                            resultados[j].conteudo + "</li>";
+                }
+                html += "</ul>";
+                resultadoDiv.innerHTML = html;
+            }
+        } else {
+            alert("Erro ao carregar JSON: " + xhr.statusText);
+        }
+    } catch (e) {
+        alert("Erro: " + e.message);
+    }
+}
+
+    </script>
+</head>
+<body style="font-family: Arial; padding: 20px;">
+    <h2>Pesquisa na Web e JSON</h2>
+
+    <label>Escolha o tipo de pesquisa:</label><br>
+    <select id="motor">
+        <option value="google">Google</option>
+        <option value="bing">Bing</option>
+        <option value="duckduckgo">DuckDuckGo</option>
+        <option value="json">JSON Remoto</option>
+    </select><br><br>
+
+    <label>Digite sua pesquisa:</label><br>
+    <input type="text" id="termo" style="width: 300px;" /><br><br>
+
+    <label>Link para o arquivo JSON (se for usar o JSON):</label><br>
+    <input type="text" id="jsonUrl" style="width: 300px;" placeholder="https://exemplo.com/dados.json" /><br><br>
+
+    <button onclick="pesquisar()">Pesquisar</button>
+
+    <div id="resultado" style="margin-top: 20px;"></div>
+</body>
+</html>
