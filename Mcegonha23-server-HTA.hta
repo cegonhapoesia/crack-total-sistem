@@ -1,0 +1,201 @@
+<html>
+<head>
+<title>Ferramenta Web Completa</title>
+<meta charset="utf-8">
+
+<hta:application 
+    applicationname="FerramentaWebCompleta"
+    border="thin"
+    scroll="yes"
+    singleinstance="yes"
+    sysmenu="yes"
+/>
+
+<style>
+    body { font-family: Arial; margin: 20px; }
+    #principal { display: none; }
+    #loginBox { border: 1px solid #ccc; padding: 20px; width: 300px; background: #f9f9f9; }
+    #databaseTable { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    #databaseTable th, #databaseTable td { border: 1px solid #999; padding: 5px; text-align: left; }
+</style>
+
+<script language="VBScript">
+
+    ' :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    ' Funções de decodificação Base64 (para esconder usuário/senha)
+    ' :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+    ' Decodifica um texto Base64 (ex: "Y2Vnb25oYQ==" → "cegonha")
+    Function DecodeBase64(base64)
+        Dim xml, node
+        Set xml = CreateObject("Msxml2.DOMDocument.3.0")
+        Set node = xml.createElement("base64")
+        node.dataType = "bin.base64"
+        node.text = base64
+        DecodeBase64 = BinaryToString(node.nodeTypedValue)
+    End Function
+
+    ' Converte binário para string (usado na função acima)
+    Function BinaryToString(Binary)
+        Dim stream
+        Set stream = CreateObject("ADODB.Stream")
+        stream.Type = 1 ' Binário
+        stream.Open
+        stream.Write Binary
+        stream.Position = 0
+        stream.Type = 2 ' Texto
+        stream.Charset = "utf-8"
+        BinaryToString = stream.ReadText
+        stream.Close
+    End Function
+
+    ' ::::::::::::::::::::::::::::::::::::::::::::::::::::
+    ' Função de login - compara valores codificados
+    ' ::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+    Sub Entrar()
+        Dim user, pass
+        user = document.getElementById("usuario").value
+        pass = document.getElementById("senha").value
+
+        ' Aqui comparamos com usuário/senha escondidos em Base64
+        ' "cegonha" codificado → Y2Vnb25oYQ==
+        ' "0000"    codificado → MDAwMA==
+        If user = DecodeBase64("Y2Vnb25oYQ==") And pass = DecodeBase64("MDAwMA==") Then
+            document.getElementById("loginBox").style.display = "none"
+            document.getElementById("principal").style.display = "block"
+        Else
+            MsgBox "Usuário ou senha incorretos!"
+        End If
+    End Sub
+
+    ' ::::::::::::::::::::::::::::::::::::::::::::::::::::
+    ' Pesquisa de arquivos na Web (Google com filtros)
+    ' ::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+    Sub Pesquisar()
+        Dim termo, url, tipo
+        termo = document.getElementById("entrada").value
+        tipo = document.getElementById("tipo").value
+
+        If termo = "" Then
+            MsgBox "Digite algo para pesquisar."
+            Exit Sub
+        End If
+
+        url = "https://www.google.com/search?q="
+
+        Select Case tipo
+    Case "todos"
+        url = url & Replace(termo, " ", "+")
+    Case "video"
+        url = url & Replace(termo, " ", "+") & "+filetype:mp4+OR+filetype:avi+OR+filetype:mkv"
+    Case "imagem"
+        url = url & Replace(termo, " ", "+") & "+filetype:jpg+OR+filetype:png+OR+filetype:webp"
+    Case "pdf"
+        url = url & Replace(termo, " ", "+") & "+filetype:pdf"
+    Case "mp3"
+        url = url & Replace(termo, " ", "+") & "+filetype:mp3"
+    Case "login"
+        url = url & Replace(termo, " ", "+") & "+inurl:login+OR+inurl:signin+filetype:php+OR+filetype:asp"
+    Case "basedados"
+        url = url & Replace(termo, " ", "+") & "+intitle:database+OR+section+filetype:sql+OR+filetype:json"
+End Select
+
+
+        Set shell = CreateObject("WScript.Shell")
+        shell.Run url
+    End Sub
+
+    ' ::::::::::::::::::::::::::::::::::::::::::::::::::::
+    ' Reprodutor de vídeo do YouTube via iframe embed
+    ' ::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+    Sub ReproduzirYouTube()
+        Dim url, videoID, finalURL
+        url = document.getElementById("ytinput").value
+
+        If url = "" Then
+            MsgBox "Cole uma URL do YouTube."
+            Exit Sub
+        End If
+
+        ' Extrai o ID do vídeo do link colado
+        If InStr(url, "youtube.com/watch?v=") > 0 Then
+            videoID = Split(url, "v=")(1)
+            videoID = Split(videoID, "&")(0)
+        ElseIf InStr(url, "youtu.be/") > 0 Then
+            videoID = Split(url, "youtu.be/")(1)
+        Else
+            MsgBox "URL inválida. Use links do YouTube."
+            Exit Sub
+        End If
+
+        finalURL = "https://www.youtube.com/embed/" & videoID
+        document.getElementById("ytframe").src = finalURL
+    End Sub
+
+</script>
+</head>
+<body>
+
+<!-- :::::::::::::::::::::::::::::::::::: -->
+<!-- Login de usuário e senha ocultos -->
+<!-- :::::::::::::::::::::::::::::::::::: -->
+<div id="loginBox">
+    <h2>🔐 Login de Usuário</h2>
+    <label>Usuário:</label><br>
+    <input type="text" id="usuario"><br><br>
+    <label>Senha:</label><br>
+    <input type="password" id="senha"><br><br>
+    <button onclick="Entrar">Entrar</button>
+</div>
+
+<!-- :::::::::::::::::::::::::::::::::::: -->
+<!-- Interface Principal (aparece após login) -->
+<!-- :::::::::::::::::::::::::::::::::::: -->
+<div id="principal">
+
+    <!-- Pesquisa -->
+    <h2>🔍 Pesquisa Inteligente de Arquivos</h2>
+    <input type="text" id="entrada" size="50" placeholder="Digite o nome do arquivo">
+   <select id="tipo">
+    <option value="todos">🔎 Todos</option>
+    <option value="video">🎥 Vídeo (mp4, avi)</option>
+    <option value="imagem">🖼️ Imagem (jpg, png)</option>
+    <option value="pdf">📄 PDF</option>
+    <option value="mp3">🎵 MP3</option>
+    <option value="login">🔐 Login Users</option>
+    <option value="basedados">🗄️ Base de Dados no Section</option>
+</select>
+    <button onclick="Pesquisar">Pesquisar</button>
+
+    <hr>
+
+    <!-- YouTube -->
+    <h2>▶️ Reprodutor de Vídeo do YouTube</h2>
+    <input type="text" id="ytinput" size="60" placeholder="Cole o link do YouTube aqui">
+    <button onclick="ReproduzirYouTube">Reproduzir</button>
+    <br><br>
+    <iframe id="ytframe" width="560" height="315" frameborder="0"
+        allow="autoplay; encrypted-media" allowfullscreen>
+    </iframe>
+
+    <hr>
+
+    <!-- Base de dados simulada -->
+    <h2>📁 Base de Dados (Exemplo)</h2>
+    <table id="databaseTable">
+        <tr><th>ID</th><th>Nome</th><th>Tipo</th></tr>
+        <tr><td>1</td><td>Apostila Matemática</td><td>PDF</td></tr>
+        <tr><td>2</td><td>Música Clássica</td><td>MP3</td></tr>
+        <tr><td>3</td><td>Documentário História</td><td>MP4</td></tr>
+    </table>
+
+    <br>
+    <h3 style="color:red;">Seja feliz por favor.</h3>
+    <img src="https://1.bp.blogspot.com/-efS_ldObNq0/V_4ogmdqYHI/AAAAAAAAU9I/moYu2rp5bZ02gqL9kMSa9lj9emftc891wCLcB/s400/69285996.gif" width="400px">
+
+</div>
+</body>
+</html>
